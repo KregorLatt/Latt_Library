@@ -19,6 +19,42 @@ namespace Latt_Library.Controllers
             _context = context;
         }
 
+        public IActionResult AddBook()
+        {
+            return View();
+
+
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddBook([Bind("Name,Author")] Book book)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(book);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(book);
+
+        }
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
         // GET: Books
         public async Task<IActionResult> Index()
         {
