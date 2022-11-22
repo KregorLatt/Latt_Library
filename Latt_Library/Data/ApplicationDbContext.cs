@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Latt_Library.Models;
 
 namespace Latt_Library.Data
 {
@@ -9,5 +10,6 @@ namespace Latt_Library.Data
             : base(options)
         {
         }
+        public DbSet<Latt_Library.Models.Book> Book { get; set; }
     }
 }
