@@ -10,102 +10,85 @@ using Latt_Library.Models;
 
 namespace Latt_Library.Controllers
 {
-    public class BooksController : Controller
+    public class BookLendersController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public BooksController(ApplicationDbContext context)
+        public BookLendersController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Books
+        // GET: BookLenders
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Book.Include(b => b.Lender);
-            return View(await applicationDbContext.ToListAsync());
+              return View(await _context.BookLender.ToListAsync());
         }
 
-        // GET: Books/Details/5
+        // GET: BookLenders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Book == null)
+            if (id == null || _context.BookLender == null)
             {
                 return NotFound();
             }
 
-            var book = await _context.Book
-                .Include(b => b.Lender)
+            var bookLender = await _context.BookLender
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (book == null)
+            if (bookLender == null)
             {
                 return NotFound();
             }
 
-            return View(book);
+            return View(bookLender);
         }
 
-        // GET: Books/Create
+        // GET: BookLenders/Create
         public IActionResult Create()
         {
-            ViewData["LenderId"] = CreateBookLenderSelectList();
             return View();
         }
 
-        private object? CreateBookLenderSelectList()
-        {
-            return new SelectList(_context.Set<BookLender>(), "Id", "ssId");
-        }
-
-        // POST: Books/Create
+        // POST: BookLenders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,LenderId,Author,RentalDate,RentalLenght,IsAvailable")] Book book)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,ssId")] BookLender bookLender)
         {
-            var bookLender = await _context.BookLender
-                .FirstOrDefaultAsync(m => m.Id == book.LenderId);
-
-            book.Lender = bookLender;
-            ModelState.ClearValidationState(nameof(Book.Lender));
-            TryValidateModel(book);
-
             if (ModelState.IsValid)
             {
-                _context.Add(book);
+                _context.Add(bookLender);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LenderId"] = new SelectList(_context.BookLender, "Id", "ssId", book.LenderId);
-            return View(book);
+            return View(bookLender);
         }
 
-        // GET: Books/Edit/5
+        // GET: BookLenders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Book == null)
+            if (id == null || _context.BookLender == null)
             {
                 return NotFound();
             }
 
-            var book = await _context.Book.FindAsync(id);
-            if (book == null)
+            var bookLender = await _context.BookLender.FindAsync(id);
+            if (bookLender == null)
             {
                 return NotFound();
             }
-            ViewData["LenderId"] = new SelectList(_context.BookLender, "Id", "Id", book.LenderId);
-            return View(book);
+            return View(bookLender);
         }
 
-        // POST: Books/Edit/5
+        // POST: BookLenders/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,LenderId,Author,RentalDate,RentalLenght,IsAvailable")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,ssId")] BookLender bookLender)
         {
-            if (id != book.Id)
+            if (id != bookLender.Id)
             {
                 return NotFound();
             }
@@ -114,12 +97,12 @@ namespace Latt_Library.Controllers
             {
                 try
                 {
-                    _context.Update(book);
+                    _context.Update(bookLender);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookExists(book.Id))
+                    if (!BookLenderExists(bookLender.Id))
                     {
                         return NotFound();
                     }
@@ -130,51 +113,49 @@ namespace Latt_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LenderId"] = new SelectList(_context.BookLender, "Id", "Id", book.LenderId);
-            return View(book);
+            return View(bookLender);
         }
 
-        // GET: Books/Delete/5
+        // GET: BookLenders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Book == null)
+            if (id == null || _context.BookLender == null)
             {
                 return NotFound();
             }
 
-            var book = await _context.Book
-                .Include(b => b.Lender)
+            var bookLender = await _context.BookLender
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (book == null)
+            if (bookLender == null)
             {
                 return NotFound();
             }
 
-            return View(book);
+            return View(bookLender);
         }
 
-        // POST: Books/Delete/5
+        // POST: BookLenders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Book == null)
+            if (_context.BookLender == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Book'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.BookLender'  is null.");
             }
-            var book = await _context.Book.FindAsync(id);
-            if (book != null)
+            var bookLender = await _context.BookLender.FindAsync(id);
+            if (bookLender != null)
             {
-                _context.Book.Remove(book);
+                _context.BookLender.Remove(bookLender);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BookExists(int id)
+        private bool BookLenderExists(int id)
         {
-          return _context.Book.Any(e => e.Id == id);
+          return _context.BookLender.Any(e => e.Id == id);
         }
     }
 }

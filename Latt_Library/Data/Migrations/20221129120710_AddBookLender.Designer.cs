@@ -4,6 +4,7 @@ using Latt_Library.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Latt_Library.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221129120710_AddBookLender")]
+    partial class AddBookLender
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,6 +42,13 @@ namespace Latt_Library.Data.Migrations
                     b.Property<int>("LenderId")
                         .HasColumnType("int");
 
+                    b.Property<int>("LendersId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Lending")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("RentalDate")
                         .HasColumnType("datetime2");
 
@@ -48,7 +57,7 @@ namespace Latt_Library.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LenderId");
+                    b.HasIndex("LendersId");
 
                     b.ToTable("Book");
                 });
@@ -282,13 +291,13 @@ namespace Latt_Library.Data.Migrations
 
             modelBuilder.Entity("Latt_Library.Models.Book", b =>
                 {
-                    b.HasOne("Latt_Library.Models.BookLender", "Lender")
+                    b.HasOne("Latt_Library.Models.BookLender", "Lenders")
                         .WithMany("Books")
-                        .HasForeignKey("LenderId")
+                        .HasForeignKey("LendersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Lender");
+                    b.Navigation("Lenders");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
