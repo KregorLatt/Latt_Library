@@ -52,9 +52,11 @@ namespace Latt_Library.Controllers
             return View();
         }
 
-        private object? CreateBookLenderSelectList()
+        private List<SelectListItem> CreateBookLenderSelectList(int? selected = null)
         {
-            return new SelectList(_context.Set<BookLender>(), "Id", "ssId");
+            var selectList = new SelectList(_context.Set<BookLender>(), "Id", "ssId", selected).ToList();
+            selectList.Insert(0, new SelectListItem("Vali eksamineeritav", "-1"));
+            return selectList;
         }
 
         // POST: Books/Create
@@ -77,7 +79,7 @@ namespace Latt_Library.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LenderId"] = new SelectList(_context.BookLender, "Id", "ssId", book.LenderId);
+            ViewData["LenderId"] = CreateBookLenderSelectList(book.LenderId);
             return View(book);
         }
 
@@ -130,7 +132,7 @@ namespace Latt_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LenderId"] = new SelectList(_context.BookLender, "Id", "Id", book.LenderId);
+            ViewData["LenderId"] = CreateBookLenderSelectList(book.LenderId);
             return View(book);
         }
 
