@@ -12,7 +12,51 @@ namespace Latt_Library.Controllers
 {
     public class BooksController : Controller
     {
+
+        // GET: Books/AddBook
+        public IActionResult AddBook()
+        {
+            ViewData["LenderId"] = AddBookLenderSelectList();
+            return View();
+        }
+
+        private List<SelectListItem> AddBookLenderSelectList(int? selected = null)
+        {
+            var selectList = new SelectList(_context.Set<BookLender>(), "Id", "ssId", selected).ToList();
+            selectList.Insert(0, new SelectListItem("Vali laenutaja", "-1"));
+            return selectList;
+        }
+
+        // POST: AddBook
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddBook([Bind("Id,LenderId,Author,RentalDate,RentalLenght,IsAvailable")] Book book)
+        {
+            var bookLender = await _context.BookLender
+                .FirstOrDefaultAsync(m => m.Id == book.LenderId);
+
+            book.Lender = bookLender;
+            ModelState.ClearValidationState(nameof(Book.Lender));
+            TryValidateModel(book);
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(book);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["LenderId"] = AddBookLenderSelectList(book.LenderId);
+            return View(book);
+        }
+
+
+
+
+
         private readonly ApplicationDbContext _context;
+
 
         public BooksController(ApplicationDbContext context)
         {
@@ -55,7 +99,7 @@ namespace Latt_Library.Controllers
         private List<SelectListItem> CreateBookLenderSelectList(int? selected = null)
         {
             var selectList = new SelectList(_context.Set<BookLender>(), "Id", "ssId", selected).ToList();
-            selectList.Insert(0, new SelectListItem("Vali eksamineeritav", "-1"));
+            selectList.Insert(0, new SelectListItem("Vali laenutaja", "-1"));
             return selectList;
         }
 
