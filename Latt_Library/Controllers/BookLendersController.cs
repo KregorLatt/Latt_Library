@@ -19,6 +19,19 @@ namespace Latt_Library.Controllers
             _context = context;
         }
 
+        public async Task<IActionResult> AddLender([Bind("Id,FirstName,LastName,ssId")] BookLender bookLender)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(bookLender);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(BooksController.CreateForUser),
+                            nameof(BooksController).Replace("Controller", ""),
+                            new { LenderId = bookLender.Id });
+            }
+            return View(bookLender);
+        }
+
         // GET: BookLenders
         public async Task<IActionResult> Index()
         {

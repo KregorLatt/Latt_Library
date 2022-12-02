@@ -19,14 +19,6 @@ namespace Latt_Library.Controllers
             ViewData["LenderId"] = AddBookLenderSelectList();
             return View();
         }
-
-        private List<SelectListItem> AddBookLenderSelectList(int? selected = null)
-        {
-            var selectList = new SelectList(_context.Set<BookLender>(), "Id", "ssId", selected).ToList();
-            selectList.Insert(0, new SelectListItem("Vali laenutaja", "-1"));
-            return selectList;
-        }
-
         // POST: AddBook
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -92,15 +84,7 @@ namespace Latt_Library.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["LenderId"] = CreateBookLenderSelectList();
             return View();
-        }
-
-        private List<SelectListItem> CreateBookLenderSelectList(int? selected = null)
-        {
-            var selectList = new SelectList(_context.Set<BookLender>(), "Id", "ssId", selected).ToList();
-            selectList.Insert(0, new SelectListItem("Vali laenutaja", "-1"));
-            return selectList;
         }
 
         // POST: Books/Create
@@ -108,22 +92,14 @@ namespace Latt_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,LenderId,Author,RentalDate,RentalLenght,IsAvailable")] Book book)
+        public async Task<IActionResult> Create([Bind("Id,Name,Author,RentalDate,RentalLenght,IsAvailable")] Book book)
         {
-            var bookLender = await _context.BookLender
-                .FirstOrDefaultAsync(m => m.Id == book.LenderId);
-
-            book.Lender = bookLender;
-            ModelState.ClearValidationState(nameof(Book.Lender));
-            TryValidateModel(book);
-
             if (ModelState.IsValid)
             {
                 _context.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LenderId"] = CreateBookLenderSelectList(book.LenderId);
             return View(book);
         }
 
@@ -176,7 +152,7 @@ namespace Latt_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["LenderId"] = CreateBookLenderSelectList(book.LenderId);
+            ViewData["LenderId"] = AddBookLenderSelectList(book.LenderId);
             return View(book);
         }
 
@@ -221,6 +197,29 @@ namespace Latt_Library.Controllers
         private bool BookExists(int id)
         {
           return _context.Book.Any(e => e.Id == id);
+        }
+        public async Task<IActionResult> CreateForUser(int lenderId)
+        {
+            var bookLender = await _context.BookLender.FirstOrDefaultAsync(m => m.Id == lenderId);
+            var book = new Book() { LenderId = lenderId, Lender = bookLender };
+            _context.Book.Add(book);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ShowAvailability));
+        }
+
+        public async Task<IActionResult> ShowAvailability()
+        {
+            var applicationDbContext = _context.Book.Include(e => e.Lender).Where(ex => ex.IsAvailable == null);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+
+
+        private List<SelectListItem> AddBookLenderSelectList(int? selected = null)
+        {
+            var selectList = new SelectList(_context.Set<BookLender>(), "Id", "ssId", selected).ToList();
+            selectList.Insert(0, new SelectListItem("Vali laenutaja", "-1"));
+            return selectList;
         }
     }
 }
