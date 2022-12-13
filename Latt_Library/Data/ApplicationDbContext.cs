@@ -13,5 +13,6 @@ namespace Latt_Library.Data
         public DbSet<Latt_Library.Models.Book> Book { get; set; }
         public DbSet<Latt_Library.Models.BookLender> BookLender { get; set; }
         public DbSet<Latt_Library.Models.Lending> Lending { get; set; }
+       
     }
 }

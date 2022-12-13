@@ -22,7 +22,8 @@ namespace Latt_Library.Controllers
         // GET: Lendings
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Lending.ToListAsync());
+            var applicationDbContext = _context.Lending.Include(l => l.Lender).Include(l => l.LentBook);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Lendings/Details/5
@@ -34,6 +35,8 @@ namespace Latt_Library.Controllers
             }
 
             var lending = await _context.Lending
+                .Include(l => l.Lender)
+                .Include(l => l.LentBook)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (lending == null)
             {
@@ -46,6 +49,8 @@ namespace Latt_Library.Controllers
         // GET: Lendings/Create
         public IActionResult Create()
         {
+            ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id");
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id");
             return View();
         }
 
@@ -54,7 +59,7 @@ namespace Latt_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Author,DateBegin,DateEnd,DateCompleted,IsLended")] Lending lending)
+        public async Task<IActionResult> Create([Bind("Id,BookLenderId,BookId,DateBegin,DateEnd,DateCompleted")] Lending lending)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +67,8 @@ namespace Latt_Library.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id", lending.BookLenderId);
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", lending.BookId);
             return View(lending);
         }
 
@@ -78,6 +85,8 @@ namespace Latt_Library.Controllers
             {
                 return NotFound();
             }
+            ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id", lending.BookLenderId);
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", lending.BookId);
             return View(lending);
         }
 
@@ -86,7 +95,7 @@ namespace Latt_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Author,DateBegin,DateEnd,DateCompleted,IsLended")] Lending lending)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BookLenderId,BookId,DateBegin,DateEnd,DateCompleted")] Lending lending)
         {
             if (id != lending.Id)
             {
@@ -113,6 +122,8 @@ namespace Latt_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id", lending.BookLenderId);
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", lending.BookId);
             return View(lending);
         }
 
@@ -125,6 +136,8 @@ namespace Latt_Library.Controllers
             }
 
             var lending = await _context.Lending
+                .Include(l => l.Lender)
+                .Include(l => l.LentBook)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (lending == null)
             {

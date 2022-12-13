@@ -9,6 +9,6 @@ namespace Latt_Library.Models
         public string LastName { get; set; }
         public string  ssId { get; set; }
 
-        public ICollection<Book>? Books { get; set; }
+        public ICollection<Lending>? Lendings { get; set; }
     }
 }
