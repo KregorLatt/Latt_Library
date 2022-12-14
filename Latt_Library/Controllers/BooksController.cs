@@ -13,6 +13,38 @@ namespace Latt_Library.Controllers
     public class BooksController : Controller
 
     {
+        public async Task<IActionResult> BorrowBook(string bookName,string searchString)
+        {
+            IQueryable<string> nameQuery = from m in _context.Book
+                                            orderby m.Name
+                                           select m.Name;
+            
+            var books = from m in _context.Book
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(s => s.Name.Contains(searchString));
+            }
+            if (!string.IsNullOrEmpty(bookName))
+            {
+                
+                books = books.Where(x => x.Name == bookName);
+            }
+
+            var bookNameVM = new BookModelViewModel
+            {
+                
+                Name = new SelectList(await nameQuery.Distinct().ToListAsync()),
+                Books = await books.ToListAsync()
+            };
+
+
+            return View(bookNameVM);
+        }
+
+
+
         public IActionResult AddBook()
         {
             return View();
