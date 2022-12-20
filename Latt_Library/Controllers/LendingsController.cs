@@ -11,7 +11,31 @@ using Latt_Library.Models;
 namespace Latt_Library.Controllers
 {
     public class LendingsController : Controller
+
     {
+        public IActionResult LendBook()
+        {
+            ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id");
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id");
+            return View();
+        }
+
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LendBook([Bind("Id,BookLenderId,BookId,DateBegin,DateEnd,DateCompleted")] Lending lending)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(lending);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id", lending.BookLenderId);
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", lending.BookId);
+            return View(lending);
+        }
+
         private readonly ApplicationDbContext _context;
 
         public LendingsController(ApplicationDbContext context)
