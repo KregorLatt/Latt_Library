@@ -14,6 +14,11 @@ namespace Latt_Library.Controllers
 
     public class BookLendersController : Controller
     {
+        public async Task<IActionResult> LenderBorrowBookIndex()
+        {
+            return View(await _context.BookLender.ToListAsync());
+        }
+
         public async Task<IActionResult> LenderBorrows()
         {
             return View(await _context.BookLender.ToListAsync());
@@ -24,9 +29,7 @@ namespace Latt_Library.Controllers
             return View();
         }
 
-        // POST: BookLenders/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LenderBorrowBook([Bind("Id,FirstName,LastName,ssId")] BookLender bookLender)
@@ -35,7 +38,7 @@ namespace Latt_Library.Controllers
             {
                 _context.Add(bookLender);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(BookLendersController.LenderBorrowBookIndex));
             }
             return View(bookLender);
         }

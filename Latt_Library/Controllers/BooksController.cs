@@ -61,9 +61,8 @@ namespace Latt_Library.Controllers
             {
                 _context.Add(book);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(BooksController.AddBook),
-                           nameof(BooksController).Replace("Controller", ""),
-                           new { examineeId = book.Id });
+                return RedirectToAction(nameof(BooksController.BorrowBook));
+                           
             }
             return View(book);
         }

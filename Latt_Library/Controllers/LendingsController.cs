@@ -13,6 +13,13 @@ namespace Latt_Library.Controllers
     public class LendingsController : Controller
 
     {
+        public async Task<IActionResult> LendBookIndex()
+        {
+            var applicationDbContext = _context.Lending.Include(l => l.Lender).Include(l => l.LentBook);
+            return View(await applicationDbContext.ToListAsync());
+
+        }
+
         public IActionResult LendBook()
         {
             ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id");
@@ -25,11 +32,15 @@ namespace Latt_Library.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LendBook([Bind("Id,BookLenderId,BookId,DateBegin,DateEnd,DateCompleted")] Lending lending)
         {
+            
+
             if (ModelState.IsValid)
             {
                 _context.Add(lending);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(LendingsController.LendBookIndex));
+               
+    
             }
             ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id", lending.BookLenderId);
             ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", lending.BookId);
