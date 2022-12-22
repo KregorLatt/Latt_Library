@@ -22,7 +22,7 @@ namespace Latt_Library.Controllers
 
         public IActionResult LendBook()
         {
-            ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id");
+            ViewData["BookLenderId"] = new SelectList(_context.Set<BookLender>(), "Id", "Id");
             ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id");
             return View();
         }
@@ -32,17 +32,25 @@ namespace Latt_Library.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LendBook([Bind("Id,BookLenderId,BookId,DateBegin,DateEnd,DateCompleted")] Lending lending)
         {
+            var bookLender = await _context.BookLender.FirstOrDefaultAsync(m => m.Id == lending.BookLenderId);
+            lending.Lender = bookLender;
+            ModelState.ClearValidationState(nameof(lending.Lender));
             
+            var lentBook = await _context.Book.FirstOrDefaultAsync(m => m.Id == lending.BookId);
+            lending.LentBook = lentBook;
+            ModelState.ClearValidationState(nameof(lending.LentBook));
+
+            TryValidateModel(lending);
 
             if (ModelState.IsValid)
             {
                 _context.Add(lending);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(LendingsController.LendBookIndex));
+                return RedirectToAction(nameof(Index));
                
     
             }
-            ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id", lending.BookLenderId);
+            ViewData["BookLenderId"] = new SelectList(_context.Set<BookLender>(), "Id", "Id", lending.BookLenderId);
             ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", lending.BookId);
             return View(lending);
         }

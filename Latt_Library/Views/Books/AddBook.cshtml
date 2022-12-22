@@ -6,11 +6,11 @@
 
 <h1>AddBook</h1>
 
-<h4>Book</h4>
+<h4>Fill in the blanks</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="AddBook">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -35,9 +35,7 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="LenderBorrows">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{
