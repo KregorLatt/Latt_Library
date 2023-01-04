@@ -7,27 +7,18 @@
 <h1>BorrowBook</h1>
 
 
-<form asp-controller="books" asp-action="Index" method="get">
+
+   
+
+
+<form asp-controller="books" asp-action="BorrowBook" method="get">
     <p>
-        <label for="BookName">Name:</label>
-        <select asp-for="BookName" asp-items="Model.Name">
-            <option value="All"></option>
-        </select>
+        
+        <label for="SearchString">Name:</label>
+        <input type="text" name="SearchString" />
         <input type="submit" value="Filter" />
-
-
-
-        @*
-        Name:<select asp-for="BookName" asp-items="Model.Name">
-            <option value="">All</option> 
-            </select>
-            <input type="submit" value="Filter" />*@
-
-        @*Name: <input type="text" name="SearchString" />
-        <input type="submit" value="Filter" />*@
     </p>
 </form>
-
 
 <table class="table">
     <thead>
