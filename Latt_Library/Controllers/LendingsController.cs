@@ -35,7 +35,7 @@ namespace Latt_Library.Controllers
             var bookLender = await _context.BookLender.FirstOrDefaultAsync(m => m.Id == lending.BookLenderId);
             lending.Lender = bookLender;
             ModelState.ClearValidationState(nameof(lending.Lender));
-            
+
             var lentBook = await _context.Book.FirstOrDefaultAsync(m => m.Id == lending.BookId);
             lending.LentBook = lentBook;
             ModelState.ClearValidationState(nameof(lending.LentBook));
@@ -46,7 +46,7 @@ namespace Latt_Library.Controllers
             {
                 _context.Add(lending);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(LendBookIndex));
                
     
             }

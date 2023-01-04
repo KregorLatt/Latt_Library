@@ -1,12 +1,13 @@
 ﻿@model IEnumerable<Latt_Library.Models.Lending>
 
 @{
-    ViewData["Title"] = "´Lendings";
+    ViewData["Title"] = "LendBookIndex";
 }
 
 <h1>Lendings</h1>
 
 
+<h4>you can view lendings here</h4>
 <table class="table">
     <thead>
         <tr>
@@ -48,8 +49,8 @@
                     @Html.DisplayFor(modelItem => item.DateCompleted)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">LendBook</a> |
-
+                    <a asp-action="Edit" asp-route-id="@item.Id">Complete lending</a> |
+                    
                 </td>
             </tr>
         }
