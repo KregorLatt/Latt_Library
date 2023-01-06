@@ -1,24 +1,27 @@
 ﻿@model Latt_Library.Models.Lending
 
 @{
-    ViewData["Title"] = "LendBook";
+    ViewData["Title"] = "Complete";
 }
 
-<h1>Lending</h1>
+<h1>Complete</h1>
 
-<h4>Fill in the blanks</h4>
+<h4>Lending</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="LendBook">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Complete">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="BookLenderId" class="control-label"></label>
                 <select asp-for="BookLenderId" class="form-control" asp-items="ViewBag.BookLenderId"></select>
+                <span asp-validation-for="BookLenderId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="BookId" class="control-label"></label>
                 <select asp-for="BookId" class="form-control" asp-items="ViewBag.BookId"></select>
+                <span asp-validation-for="BookId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DateBegin" class="control-label"></label>
@@ -36,21 +39,18 @@
                 <span asp-validation-for="DateCompleted" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    }
-
-
-
-
+}

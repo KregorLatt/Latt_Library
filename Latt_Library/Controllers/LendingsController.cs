@@ -13,6 +13,60 @@ namespace Latt_Library.Controllers
     public class LendingsController : Controller
 
     {
+        public async Task<IActionResult> Complete(int? id)
+        {
+            if (id == null || _context.Lending == null)
+            {
+                return NotFound();
+            }
+
+            var lending = await _context.Lending.FindAsync(id);
+            if (lending == null)
+            {
+                return NotFound();
+            }
+            ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id", lending.BookLenderId);
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", lending.BookId);
+            return View(lending);
+        }
+
+        // POST: Lendings/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Complete(int id, [Bind("Id,BookLenderId,BookId,DateBegin,DateEnd,DateCompleted")] Lending lending)
+        {
+            if (id != lending.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(lending);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!LendingExists(lending.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(LendBookIndex));
+            }
+            ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id", lending.BookLenderId);
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", lending.BookId);
+            return View(lending);
+        }
+
         public async Task<IActionResult> LendBookIndex()
         {
             var applicationDbContext = _context.Lending.Include(l => l.Lender).Include(l => l.LentBook);
