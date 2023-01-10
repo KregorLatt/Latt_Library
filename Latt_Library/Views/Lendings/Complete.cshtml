@@ -13,26 +13,15 @@
         <form asp-action="Complete">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="BookLenderId" class="control-label"></label>
-                <select asp-for="BookLenderId" class="form-control" asp-items="ViewBag.BookLenderId"></select>
-                <span asp-validation-for="BookLenderId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BookId" class="control-label"></label>
-                <select asp-for="BookId" class="form-control" asp-items="ViewBag.BookId"></select>
-                <span asp-validation-for="BookId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateBegin" class="control-label"></label>
-                <input asp-for="DateBegin" class="form-control" />
-                <span asp-validation-for="DateBegin" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateEnd" class="control-label"></label>
-                <input asp-for="DateEnd" class="form-control" />
-                <span asp-validation-for="DateEnd" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="BookLenderId" />
+            
+            <input type="hidden" asp-for="BookId" />
+            
+            <input type="hidden" asp-for="DateBegin" />
+           
+            
+            <input type="hidden" asp-for="DateEnd" />
+            
             <div class="form-group">
                 <label asp-for="DateCompleted" class="control-label"></label>
                 <input asp-for="DateCompleted" class="form-control" />
@@ -46,7 +35,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="LendBookIndex">Back to List</a>
 </div>
 
 @section Scripts {

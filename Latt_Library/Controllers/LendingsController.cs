@@ -37,6 +37,15 @@ namespace Latt_Library.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Complete(int id, [Bind("Id,BookLenderId,BookId,DateBegin,DateEnd,DateCompleted")] Lending lending)
         {
+            var bookLender = await _context.BookLender.FirstOrDefaultAsync(m => m.Id == lending.BookLenderId);
+            lending.Lender = bookLender;
+            ModelState.ClearValidationState(nameof(lending.Lender));
+            ModelState.MarkFieldValid(nameof(lending.Lender));
+
+            var lentBook = await _context.Book.FirstOrDefaultAsync(m => m.Id == lending.BookId);
+            lending.LentBook = lentBook;
+            ModelState.ClearValidationState(nameof(lending.LentBook));
+            ModelState.MarkFieldValid(nameof(lending.LentBook));
             if (id != lending.Id)
             {
                 return NotFound();
@@ -62,10 +71,10 @@ namespace Latt_Library.Controllers
                 }
                 return RedirectToAction(nameof(LendBookIndex));
             }
-            ViewData["BookLenderId"] = new SelectList(_context.BookLender, "Id", "Id", lending.BookLenderId);
-            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", lending.BookId);
+            
             return View(lending);
         }
+
 
         public async Task<IActionResult> LendBookIndex()
         {
