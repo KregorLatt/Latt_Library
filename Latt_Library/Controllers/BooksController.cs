@@ -39,10 +39,11 @@ namespace Latt_Library.Controllers
                 Books = await books.ToListAsync()
             };
 
+            
 
             return View(bookNameVM);
         }
-
+        
 
 
         public IActionResult AddBook()

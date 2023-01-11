@@ -1,4 +1,6 @@
-﻿namespace Latt_Library.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Latt_Library.Models
 {
     public class Lending
     {

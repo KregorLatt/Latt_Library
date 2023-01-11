@@ -78,15 +78,15 @@ namespace Latt_Library.Controllers
 
         public async Task<IActionResult> LendBookIndex()
         {
-            var applicationDbContext = _context.Lending.Include(l => l.Lender).Include(l => l.LentBook);
+            var applicationDbContext = _context.Lending.Include(l => l.Lender).Include(l => l.LentBook).Where(m => m.DateCompleted == null);
             return View(await applicationDbContext.ToListAsync());
 
         }
 
         public IActionResult LendBook()
         {
-            ViewData["BookLenderId"] = new SelectList(_context.Set<BookLender>(), "Id", "Id");
-            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id");
+            ViewData["BookLenderId"] = new SelectList(_context.Set<BookLender>(), "Id", "FirstName");
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Name");
             return View();
         }
 
