@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Latt_Library.Data;
 using Latt_Library.Models;
+using System.Composition;
 
 namespace Latt_Library.Controllers
 {
@@ -77,9 +78,15 @@ namespace Latt_Library.Controllers
 
 
         public async Task<IActionResult> LendBookIndex()
+
         {
+            
             var applicationDbContext = _context.Lending.Include(l => l.Lender).Include(l => l.LentBook).Where(m => m.DateCompleted == null);
             return View(await applicationDbContext.ToListAsync());
+
+           
+
+
 
         }
 
@@ -107,6 +114,7 @@ namespace Latt_Library.Controllers
 
             if (ModelState.IsValid)
             {
+                lentBook.IsLended = true;
                 _context.Add(lending);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(LendBookIndex));
