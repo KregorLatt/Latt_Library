@@ -32,18 +32,10 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr class="@{
-            DateTime current = DateTime.Now;
-            DateTime expiry = item.DateEnd??current;
+            
+                <tr style="background-color:@item.GetRowColor();">
+            
 
-            var duration = ((current - expiry).Duration().TotalDays>=14);
-            
-            {
-	
-            }
-        
-            
-}">
                 <td>
                     @Html.DisplayFor(modelItem => item.Lender.Id)
                 </td>
